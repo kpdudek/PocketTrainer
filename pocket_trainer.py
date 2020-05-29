@@ -109,7 +109,7 @@ class WorkoutPlayer(QtWidgets.QWidget):
     def switch_to_main_window(self):
         self.go_home.emit()
 
-class Controller:
+class Controller(object):
 
     def __init__(self):
         self.main_window = YogaMainWindow()
