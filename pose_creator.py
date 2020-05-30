@@ -6,7 +6,6 @@ import os
 name = pwd.getpwuid( os.getuid() ).pw_name
 user_path = '/home/%s/'%name
 
-#TODO: get file path dynamically
 if not os.stat('%s/Documents/Python/Yoga_Bot/Library/yoga_poses.json'%(user_path)).st_size == 0:
     with open('%s/Documents/Python/Yoga_Bot/Library/yoga_poses.json'%(user_path),'r') as fp:
         yoga_dict = json.load(fp)

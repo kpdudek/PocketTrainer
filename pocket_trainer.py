@@ -3,15 +3,37 @@
 from PyQt5.QtWidgets import *
 from PyQt5.QtCore import *
 from PyQt5.QtGui import *
+from widgets import *
 
 from pyqtgraph import PlotWidget, plot
 import pyqtgraph as pg
 
 import sys
 import time
+import datetime
 import os
 import json
 import pwd
+
+def log(text):
+    curr_time = str(datetime.datetime.now())
+    curr_time = '[%s]'%(curr_time)
+    log_msg = curr_time + ' ' + text
+    print(log_msg)
+
+    name = pwd.getpwuid( os.getuid() ).pw_name
+    user_path = '/home/%s/PocketTrainer/'%name
+
+    with open('%slogs.txt'%(user_path),'a') as fp:
+        if not os.stat('%slogs.txt'%(user_path)).st_size == 0:
+            fp.write('\n'+ log_msg)
+        else:
+            fp.write(log_msg)
+
+    try:    
+        fp.close()
+    except:
+        print('Error closing log file...')
 
 class YogaMainWindow(QWidget):
     workout_creator_signal = pyqtSignal()
@@ -25,7 +47,7 @@ class YogaMainWindow(QWidget):
         if self.first_launch:
             self.setGeometry(200,200,400,600)
             self.first_launch = False
-            print('Set geometry of main window...')
+            log('Set geometry of main window...')
 
         self.layout = QVBoxLayout()
 
@@ -69,7 +91,7 @@ class WorkoutCreator(QWidget):
         if self.first_launch:
             self.setGeometry(200,200,400,600)
             self.first_launch = False
-            print('Set geometry of workout creator window...')
+            log('Set geometry of workout creator window...')
 
         self.layout = QGridLayout()
 
@@ -104,7 +126,7 @@ class WorkoutCreator(QWidget):
         name = pwd.getpwuid( os.getuid() ).pw_name
         user_path = '/home/%s/PocketTrainer/'%name
         plugins = os.listdir('%sPlugins/'%(user_path))
-        print('{} plugins found...'.format(len(plugins)))
+        log('{} plugins found...'.format(len(plugins)))
 
         workout_types = []
         for filename in plugins:
@@ -119,23 +141,26 @@ class WorkoutCreator(QWidget):
         try:
             self.layout.removeWidget(self.spacer)
         except:
-            print("Tried to remove the spacer, but it doesn't exist")
+            log("Tried to remove the spacer, but it doesn't exist")
         
         try:
             self.layout.removeWidget(self.form)
         except:
-            print("Tried to remove the form entry, but it doesn't exist")
+            log("Tried to remove the form entry, but it doesn't exist")
         
-        self.form = QGridLayout()
+        # self.form = QGridLayout()
 
-        self.form_line_label = QLabel('Test Show')
-        self.form.addWidget(self.form_line_label,0,0)
+        # self.form_line_label = QLabel('Test Show')
+        # self.form.addWidget(self.form_line_label,0,0)
 
-        self.form_line_edit = QLineEdit()
-        self.form.addWidget(self.form_line_edit,0,1,0,6)
+        # self.form_line_edit = QLineEdit()
+        # self.form.addWidget(self.form_line_edit,0,1,0,6)
+
+        form_lines = []
+        form_lines.append(FormEntry('Line 1:','Type here...'))
         
         # Add layout to the parent widget
-        self.layout.addLayout(self.form,2,0,15,6)
+        self.layout.addLayout(form_lines[0].form,2,0,15,6)
 
     def show_form(self):
         # Loop through plugin workout template and display a form entry for each
@@ -159,7 +184,7 @@ class PlaylistCreator(QWidget):
         if self.first_launch:
             self.setGeometry(200,200,400,600)
             self.first_launch = False
-            print('Set geometry of playlist creator window...')
+            log('Set geometry of playlist creator window...')
 
         self.layout = QGridLayout()
 
@@ -183,7 +208,7 @@ class WorkoutPlayer(QWidget):
         if self.first_launch:
             self.setGeometry(200,200,1920,1080)
             self.first_launch = False
-            print('Set geometry of workout player window...')
+            log('Set geometry of workout player window...')
 
 
         self.layout = QGridLayout()
@@ -221,19 +246,19 @@ class Controller(object):
             self.workout_creator_past_geom = self.workout_creator.geometry()
             self.workout_creator.hide()
         except:
-            print("Tried to hide workout creator but failed...")
+            log("Tried to hide workout creator but failed...")
 
         try:
             self.playlist_creator_past_geom = self.playlist_creator.geometry()
             self.playlist_creator.hide()
         except:
-            print("Tried to hide playlist creator but failed...")
+            log("Tried to hide playlist creator but failed...")
 
         try:
             self.workout_player_past_geom = self.workout_player.geometry()
             self.workout_player.hide()
         except:
-            print("Tried to hide workout_player but failed...")
+            log("Tried to hide workout_player but failed...")
 
         self.main_window.setGeometry(self.main_window_past_geom)
         self.main_window.show()
@@ -244,7 +269,7 @@ class Controller(object):
             self.main_window_past_geom = self.main_window.geometry()
             self.main_window.hide()
         except:
-            print("Tried to hide main window but failed...")
+            log("Tried to hide main window but failed...")
 
         self.workout_creator.show()
     
@@ -254,7 +279,7 @@ class Controller(object):
             self.main_window_past_geom = self.main_window.geometry()
             self.main_window.hide()
         except:
-            print("Tried to hide main window but failed...")
+            log("Tried to hide main window but failed...")
 
         self.playlist_creator.show()
     
@@ -263,6 +288,8 @@ class Controller(object):
         self.workout_player.show()
 
 def main():
+    log('Session started...')
+    
     app = QApplication(sys.argv)
 
     # Now use a palette to switch to dark colors:
@@ -284,8 +311,6 @@ def main():
 
     # Instantiate the controller to manage displaying windows and data management
     controller = Controller()
-
-    # Start 
     controller.show_main_window()
     app.exec_()
 
