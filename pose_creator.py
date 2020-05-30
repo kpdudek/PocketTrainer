@@ -3,9 +3,12 @@
 import json
 import os
 
+name = pwd.getpwuid( os.getuid() ).pw_name
+user_path = '/home/%s/'%name
+
 #TODO: get file path dynamically
-if not os.stat('/home/kurt/Documents/Python/Yoga_Bot/Library/yoga_poses.json').st_size == 0:
-    with open('/home/kurt/Documents/Python/Yoga_Bot/Library/yoga_poses.json','r') as fp:
+if not os.stat('%s/Documents/Python/Yoga_Bot/Library/yoga_poses.json'%(user_path)).st_size == 0:
+    with open('%s/Documents/Python/Yoga_Bot/Library/yoga_poses.json'%(user_path),'r') as fp:
         yoga_dict = json.load(fp)
 else:
     yoga_dict = {}
@@ -49,5 +52,5 @@ for count, key in enumerate(keys):
 yoga_dict.update({key1 : pose_info})
 
 
-with open('/home/kurt/Documents/Python/Yoga_Bot/Library/yoga_poses.json', 'w') as fp:
+with open('%s/Documents/Python/Yoga_Bot/Library/yoga_poses.json'%(user_path), 'w') as fp:
     json.dump(yoga_dict, fp)
