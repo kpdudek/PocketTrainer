@@ -18,9 +18,14 @@ class YogaMainWindow(QtWidgets.QWidget):
     workout_player_signal = pyqtSignal()
 
     def __init__(self):
-        QtWidgets.QWidget.__init__(self)
+        # QtWidgets.QWidget.__init__(self)
+        super().__init__()
         self.setWindowTitle('Pocket Trainer')
-        self.setGeometry(200,200,400,600)
+        self.first_launch = True
+        if self.first_launch:
+            self.setGeometry(200,200,400,600)
+            self.first_launch = False
+            print('Set geometry of window...')
 
         layout = QVBoxLayout()
 
@@ -48,21 +53,25 @@ class YogaMainWindow(QtWidgets.QWidget):
     def switch_to_start_session(self):
         self.workout_player_signal.emit()
 
-class WorkoutCreator(QtWidgets.QWidget):
+class WorkoutCreator(QtWidgets.QWidget): 
     go_home = pyqtSignal()
 
     def __init__(self):
-        QtWidgets.QWidget.__init__(self)
+        # QtWidgets.QWidget.__init__(self)
+        super().__init__()
         self.setWindowTitle('Workout Creator')
-        self.setGeometry(200,200,400,600)
+        self.first_launch = True
+        if self.first_launch:
+            self.setGeometry(200,200,400,600)
+            self.first_launch = False
+            print('Set geometry of window...')
 
         layout = QtWidgets.QGridLayout()
 
         self.button = QtWidgets.QPushButton('Home')
         self.button.clicked.connect(self.switch_to_main_window)
-
+        
         layout.addWidget(self.button)
-
         self.setLayout(layout)
 
     def switch_to_main_window(self):
@@ -72,9 +81,14 @@ class PlaylistCreator(QtWidgets.QWidget):
     go_home = pyqtSignal()
 
     def __init__(self):
-        QtWidgets.QWidget.__init__(self)
+        # QtWidgets.QWidget.__init__(self)
+        super().__init__()
         self.setWindowTitle('Playlist Creator')
-        self.setGeometry(200,200,400,600)
+        self.first_launch = True
+        if self.first_launch:
+            self.setGeometry(200,200,400,600)
+            self.first_launch = False
+            print('Set geometry of window...')
 
         layout = QtWidgets.QGridLayout()
 
@@ -92,9 +106,14 @@ class WorkoutPlayer(QtWidgets.QWidget):
     go_home = pyqtSignal()
 
     def __init__(self):
-        QtWidgets.QWidget.__init__(self)
+        # QtWidgets.QWidget.__init__(self)
+        super().__init__()
         self.setWindowTitle('Workout Player')
-        self.setGeometry(200,200,1920,1080)
+        self.first_launch = True
+        if self.first_launch:
+            self.setGeometry(200,200,1920,1080)
+            self.first_launch = False
+            print('Set geometry of window...')
 
 
         layout = QtWidgets.QGridLayout()
@@ -113,60 +132,64 @@ class Controller(object):
 
     def __init__(self):
         self.main_window = YogaMainWindow()
+        self.main_window_past_geom = self.main_window.geometry()
+
         self.workout_creator = WorkoutCreator()
+        self.workout_creator_past_geom = self.workout_creator.geometry()
+
         self.workout_player = WorkoutPlayer()
+        self.workout_player_past_geom = self.workout_player.geometry()
+
         self.playlist_creator = PlaylistCreator()
+        self.playlist_creator_past_geom = self.playlist_creator.geometry()
 
     def show_main_window(self):
-        # self.main_window = YogaMainWindow()
         self.main_window.workout_creator_signal.connect(self.show_workout_creator)
         self.main_window.playlist_creator_signal.connect(self.show_playlist_creator)
         self.main_window.workout_player_signal.connect(self.show_workout_player)
         try:
-            self.workout_creator.close()
+            self.workout_creator_past_geom = self.workout_creator.geometry()
+            self.workout_creator.hide()
         except:
-            print("Tried to close workout creator but it doesn't exist...")
+            print("Tried to hide workout creator but failed...")
 
         try:
-            self.playlist_creator.close()
+            self.playlist_creator_past_geom = self.playlist_creator.geometry()
+            self.playlist_creator.hide()
         except:
-            print("Tried to close playlist creator but it doesn't exist...")
+            print("Tried to hide playlist creator but failed...")
 
         try:
-            self.workout_player.close()
+            self.workout_player_past_geom = self.workout_player.geometry()
+            self.workout_player.hide()
         except:
-            print("Tried to close workout_player but it doesn't exist...")
+            print("Tried to hide workout_player but failed...")
 
+        self.main_window.setGeometry(self.main_window_past_geom)
         self.main_window.show()
 
     def show_workout_creator(self):
-        # self.workout_creator = WorkoutCreator()
         self.workout_creator.go_home.connect(self.show_main_window)
         try:
-            self.main_window.close()
+            self.main_window_past_geom = self.main_window.geometry()
+            self.main_window.hide()
         except:
-            print("Tried to close main window but it doesn't exist...")
+            print("Tried to hide main window but failed...")
 
         self.workout_creator.show()
     
     def show_playlist_creator(self):
-        # self.workout_creator = WorkoutCreator()
         self.playlist_creator.go_home.connect(self.show_main_window)
         try:
-            self.main_window.close()
+            self.main_window_past_geom = self.main_window.geometry()
+            self.main_window.hide()
         except:
-            print("Tried to close main window but it doesn't exist...")
+            print("Tried to hide main window but failed...")
 
         self.playlist_creator.show()
     
     def show_workout_player(self):
-        # self.workout_player = WorkoutPlayer()
         self.workout_player.go_home.connect(self.show_main_window)
-        # try:
-        #     self.main_window.close()
-        # except:
-        #     print("Tried to close main window but it doesn't exist...")
-
         self.workout_player.show()
 
 def main():
