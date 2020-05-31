@@ -17,6 +17,11 @@ import pwd
 import random as rnd
 
 def log(text):
+    '''
+    Display the text passed and append to the logs.txt file
+    parameters:
+        text: str
+    '''
     curr_time = str(datetime.datetime.now())
     curr_time = '[%s]'%(curr_time)
     log_msg = curr_time + ' ' + text
@@ -94,7 +99,7 @@ class WorkoutCreator(QWidget):
 
         self.first_launch = True
         if self.first_launch:
-            self.setGeometry(200,200,400,600)
+            self.setGeometry(200,200,600,400)
             self.first_launch = False
             log('Set geometry of workout creator window...')
 
@@ -120,6 +125,11 @@ class WorkoutCreator(QWidget):
 
         self.spacer = QLabel()
         self.layout.addWidget(self.spacer,self.starting_row,0,self.height,self.width)
+
+        self.add_workout_button = QPushButton('Add')
+        self.add_workout_button.clicked.connect(self.add_workout)
+        self.workout_button_added = False
+        # self.layout.addWidget(self.add_workout_button,self.height+1,0,self.height+1,self.width)
         
         # Count the number of widgets added in the constructor. These cannot be deleted later on
         self.num_header_widgets = 3
@@ -193,6 +203,11 @@ class WorkoutCreator(QWidget):
             form.addLayout(key.form)
         self.form_widget.setLayout(form)
         self.layout.addWidget(self.form_widget,self.starting_row,0,self.height,self.width+2)
+
+        if not self.workout_button_added:
+            self.layout.addWidget(self.add_workout_button,self.height+2,0,self.height+1,self.width+2)
+            self.workout_button_added = True
+            log("Add workout button added to workout creator widget...")
 
         self.previous_workout_selected = workout_selected
 
@@ -337,21 +352,23 @@ def main():
     app = QApplication(sys.argv)
 
     # Now use a palette to switch to dark colors:
-    palette = QPalette()
-    palette.setColor(QPalette.Window, QColor(53, 53, 53))
-    palette.setColor(QPalette.WindowText, Qt.white)
-    palette.setColor(QPalette.Base, QColor(25, 25, 25))
-    palette.setColor(QPalette.AlternateBase, QColor(53, 53, 53))
-    palette.setColor(QPalette.ToolTipBase, Qt.white)
-    palette.setColor(QPalette.ToolTipText, Qt.white)
-    palette.setColor(QPalette.Text, Qt.white)
-    palette.setColor(QPalette.Button, QColor(53, 53, 53))
-    palette.setColor(QPalette.ButtonText, Qt.white)
-    palette.setColor(QPalette.BrightText, Qt.red)
-    palette.setColor(QPalette.Link, QColor(42, 130, 218))
-    palette.setColor(QPalette.Highlight, QColor(42, 130, 218))
-    palette.setColor(QPalette.HighlightedText, Qt.black)
-    app.setPalette(palette)
+    dark_mode = True
+    if dark_mode:
+        palette = QPalette()
+        palette.setColor(QPalette.Window, QColor(53, 53, 53))
+        palette.setColor(QPalette.WindowText, Qt.white)
+        palette.setColor(QPalette.Base, QColor(25, 25, 25))
+        palette.setColor(QPalette.AlternateBase, QColor(53, 53, 53))
+        palette.setColor(QPalette.ToolTipBase, Qt.white)
+        palette.setColor(QPalette.ToolTipText, Qt.white)
+        palette.setColor(QPalette.Text, Qt.white)
+        palette.setColor(QPalette.Button, QColor(53, 53, 53))
+        palette.setColor(QPalette.ButtonText, Qt.white)
+        palette.setColor(QPalette.BrightText, Qt.red)
+        palette.setColor(QPalette.Link, QColor(42, 130, 218))
+        palette.setColor(QPalette.Highlight, QColor(42, 130, 218))
+        palette.setColor(QPalette.HighlightedText, Qt.black)
+        app.setPalette(palette)
 
     # Instantiate the controller to manage displaying windows and data management
     controller = Controller()
