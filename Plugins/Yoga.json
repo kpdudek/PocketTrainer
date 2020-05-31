@@ -1,1 +1,1 @@
-{"Pose Name": {"Focus": "string", "Image": "file_path", "Time": "int", "Difficulty": "string", "Category": "string"}}
+{"Yoga": {"Body Area": "string", "Image Name": "string", "Duration": "int", "Difficulty [0,10]": "string", "Focus": "string", "Blocks Required": "bool"}}

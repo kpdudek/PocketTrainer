@@ -14,6 +14,7 @@ import datetime
 import os
 import json
 import pwd
+import random as rnd
 
 def log(text):
     curr_time = str(datetime.datetime.now())
@@ -26,7 +27,10 @@ def log(text):
 
     with open('%slogs.txt'%(user_path),'a') as fp:
         if not os.stat('%slogs.txt'%(user_path)).st_size == 0:
-            fp.write('\n'+ log_msg)
+            if text == 'Session started...':
+                fp.write('\n\n\n'+ log_msg)
+            else:
+                fp.write('\n'+ log_msg)
         else:
             fp.write(log_msg)
 
@@ -82,6 +86,7 @@ class WorkoutCreator(QWidget):
     # Workout creator attributes
     plugins = None
     workout_types = None
+    previous_workout_selected = None # Previous QComboBox value.
 
     def __init__(self):
         super().__init__()
@@ -94,6 +99,9 @@ class WorkoutCreator(QWidget):
             log('Set geometry of workout creator window...')
 
         self.layout = QGridLayout()
+        self.starting_row = 2 # Starting row for the form
+        self.width = 6 # Grid width used 
+        self.height = 15
 
         # Set 'Home' button in top left corner
         self.button = QPushButton('Home')
@@ -104,15 +112,17 @@ class WorkoutCreator(QWidget):
         self.load_plugins()
         self.workout_type_selector = QComboBox()
         self.workout_type_selector.addItems(self.workout_types)
-        self.layout.addWidget(self.workout_type_selector,1,0,1,5)
+        self.layout.addWidget(self.workout_type_selector,1,0,1,self.width-1) 
 
         self.select_plugin_button = QPushButton('Select')
         self.select_plugin_button.clicked.connect(self.display_form)
-        self.layout.addWidget(self.select_plugin_button,1,6)
+        self.layout.addWidget(self.select_plugin_button,1,self.width)
 
         self.spacer = QLabel()
-        self.layout.addWidget(self.spacer,2,0,15,6)
+        self.layout.addWidget(self.spacer,self.starting_row,0,self.height,self.width)
         
+        # Count the number of widgets added in the constructor. These cannot be deleted later on
+        self.num_header_widgets = 3
         # Set layout of widget
         self.setLayout(self.layout)
 
@@ -122,45 +132,69 @@ class WorkoutCreator(QWidget):
     def load_plugins(self):
         # Get plugins from folder and load into combo box
         # Load JSON into a class attribute
+        self.user_name = pwd.getpwuid( os.getuid() ).pw_name
+        self.user_path = '/home/%s/PocketTrainer/'%self.user_name
+        self.plugins = os.listdir('%sPlugins/'%(self.user_path))
+        log('{} plugins found...'.format(len(self.plugins)))
 
-        name = pwd.getpwuid( os.getuid() ).pw_name
-        user_path = '/home/%s/PocketTrainer/'%name
-        plugins = os.listdir('%sPlugins/'%(user_path))
-        log('{} plugins found...'.format(len(plugins)))
-
-        workout_types = []
-        for filename in plugins:
-            workout_types.append(filename.split('.')[0])
-
-        self.plugins = plugins
-        self.workout_types = workout_types
+        # Split the json extension of the plugin files for displaying in the QComboBox
+        self.workout_types = []
+        for filename in self.plugins:
+            self.workout_types.append(filename.split('.')[0])
 
     def display_form(self):
-        # On 'select_plugin_button' press
-        # Pull current selection from the plugin combo box and display the corresponding form
+        '''
+        On 'select_plugin_button' press
+        Pull current selection from the plugin combo box and display the corresponding form
+        '''
+        # Get the selected workout from the QComboBox
+        workout_selected = self.workout_type_selector.currentText()
+        if self.previous_workout_selected == workout_selected:
+            return
+        
+        # Remove the spacer if it exists
         try:
             self.layout.removeWidget(self.spacer)
         except:
-            log("Tried to remove the spacer, but it doesn't exist")
-        
+            log("Tried to hide the spacer, but it doesn't exist...")
+
+        # Delete the existing Form Widget in order to display the new selected workout        
         try:
-            self.layout.removeWidget(self.form)
+            self.layout.removeWidget(self.form_widget)
+            self.form_widget.deleteLater()
+            self.form_widget = None
         except:
-            log("Tried to remove the form entry, but it doesn't exist")
+            log("Tried to remove the form entry, but it doesn't exist...")
+
+        # Load the selected workouts plugin json file
+        workout_selected_json = '%s.json'%(workout_selected)
+        try:
+            fp = open('%s/Plugins/%s'%(self.user_path,workout_selected_json),'r')
+            workout_plugin = json.load(fp)
+            log("Loaded plugin {%s}..."%(workout_selected))
+        except:
+            log("Failed to load plugin {%s}..."%(workout_selected))
         
-        # self.form = QGridLayout()
-
-        # self.form_line_label = QLabel('Test Show')
-        # self.form.addWidget(self.form_line_label,0,0)
-
-        # self.form_line_edit = QLineEdit()
-        # self.form.addWidget(self.form_line_edit,0,1,0,6)
-
+        for key in workout_plugin:
+            workout_name = key
+            workout_template = workout_plugin[key]
+        
+        # Populating form lines with strings from the plugin template
         form_lines = []
-        form_lines.append(FormEntry('Line 1:','Type here...'))
+        for key in workout_template:
+            val = key
+            form_lines.append(FormEntry('%s:'%(val),'Type here...'))
         
-        # Add layout to the parent widget
-        self.layout.addLayout(form_lines[0].form,2,0,15,6)
+        # Stack the form lines in a QVBoxLayout
+        self.form_widget = QWidget()
+        form = QVBoxLayout()
+        # Add form widget to the parent widget
+        for count, key in enumerate(form_lines):
+            form.addLayout(key.form)
+        self.form_widget.setLayout(form)
+        self.layout.addWidget(self.form_widget,self.starting_row,0,self.height,self.width+2)
+
+        self.previous_workout_selected = workout_selected
 
     def show_form(self):
         # Loop through plugin workout template and display a form entry for each
@@ -175,6 +209,10 @@ class WorkoutCreator(QWidget):
         pass
 
 class PlaylistCreator(QWidget):
+    '''
+    A playlist contains the plugins required, workout settings, and the workouts
+    '''
+
     go_home = pyqtSignal()
 
     def __init__(self):
@@ -198,7 +236,13 @@ class PlaylistCreator(QWidget):
     def switch_to_main_window(self):
         self.go_home.emit()
 
+
+
 class WorkoutPlayer(QWidget):
+    '''
+    This Widget is responsible for displaying the contents of a playlist
+    A plugin must be loaded whenever the workout type switches
+    '''
     go_home = pyqtSignal()
 
     def __init__(self):
@@ -213,7 +257,7 @@ class WorkoutPlayer(QWidget):
 
         self.layout = QGridLayout()
 
-        self.button = QPushButton('Home')
+        self.button = QPushButton('Close')
         self.button.clicked.connect(self.switch_to_main_window)
 
         self.layout.addWidget(self.button)
@@ -289,7 +333,7 @@ class Controller(object):
 
 def main():
     log('Session started...')
-    
+
     app = QApplication(sys.argv)
 
     # Now use a palette to switch to dark colors:
