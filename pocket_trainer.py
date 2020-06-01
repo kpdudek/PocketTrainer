@@ -198,34 +198,28 @@ class WorkoutCreator(QWidget):
                 if entry == 'Type here...':
                     log('Line edits not changed on line {%s}...'%(key))
                     return False
-                else:
-                    return True
 
             elif data_type == 'float':
                 try:
                     entry = float(entry)
-                    return True
                 except:
-                    return False
                     log('Line {%s} was expecting a float but did not receive one...'%(key))
+                    return False
 
             elif data_type == 'int':
                 try:
                     entry = int(entry)
-                    return True
                 except:
-                    return False
                     log('Line {%s} was expecting an int but did not receive one...'%(key))
+                    return False
 
-            elif data_type == 'bool':
+            elif data_type == "bool":
                 trues = ['yes','Yes','YES','ya','yeet','yea','Yea','YEA','True','true','TRUE']
                 falses = ['no','No','NO','False','false','FALSE']
                 acceptable_responses = trues + falses
-                if entry in acceptable_responses:
-                    return True
-                else:
-                    return False
+                if not entry in acceptable_responses:
                     log('Response in line {%s} could not be converted to a bool...'%(key))
+                    return False
             else:
                 log("Data type of template not recognized...")
 
