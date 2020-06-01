@@ -177,29 +177,29 @@ class WorkoutCreator(QWidget):
             log("Tried to remove the form entry, but it doesn't exist...")
 
         # Load the selected workouts plugin json file
-        workout_selected_json = '%s.json'%(workout_selected)
+        self.workout_selected_json = '%s.json'%(workout_selected)
         try:
-            fp = open('%s/Plugins/%s'%(self.user_path,workout_selected_json),'r')
-            workout_plugin = json.load(fp)
+            fp = open('%s/Plugins/%s'%(self.user_path,self.workout_selected_json),'r')
+            self.workout_plugin = json.load(fp)
             log("Loaded plugin {%s}..."%(workout_selected))
         except:
             log("Failed to load plugin {%s}..."%(workout_selected))
         
-        for key in workout_plugin:
-            workout_name = key
-            workout_template = workout_plugin[key]
+        for key in self.workout_plugin:
+            self.workout_name = key
+            self.workout_template = self.workout_plugin[key]
         
         # Populating form lines with strings from the plugin template
-        form_lines = []
-        for key in workout_template:
+        self.form_lines = []
+        for key in self.workout_template:
             val = key
-            form_lines.append(FormEntry('%s:'%(val),'Type here...'))
+            self.form_lines.append(FormEntry(val,'Type here...'))
         
         # Stack the form lines in a QVBoxLayout
         self.form_widget = QWidget()
         form = QVBoxLayout()
         # Add form widget to the parent widget
-        for count, key in enumerate(form_lines):
+        for count, key in enumerate(self.form_lines):
             form.addLayout(key.form)
         self.form_widget.setLayout(form)
         self.layout.addWidget(self.form_widget,self.starting_row,0,self.height,self.width+2)
@@ -211,16 +211,87 @@ class WorkoutCreator(QWidget):
 
         self.previous_workout_selected = workout_selected
 
-    def show_form(self):
-        # Loop through plugin workout template and display a form entry for each
-        pass
-
     def check_entries(self):
         # make sure all fields are valid based on expected type
-        pass
+        # check if type of workout template matches line entry
+        #   if string: make sure its not 'Type here...'
+        for line in self.form_lines:
+            key = line.form_line_label.text()
+            key,colon = key.split(':') # Split the colon from the label text
+            entry = line.form_line_edit.text()
+            data_type = self.workout_template[key]
+
+            if data_type == 'string':
+                if entry == 'Type here...':
+                    log('Line edits not changed on line {%s}...'%(key))
+                    return False
+                else:
+                    return True
+
+            elif data_type == 'float':
+                try:
+                    entry = float(entry)
+                    return True
+                except:
+                    return False
+                    log('Line {%s} was expecting a float but did not receive one...'%(key))
+
+            elif data_type == 'int':
+                try:
+                    entry = int(entry)
+                    return True
+                except:
+                    return False
+                    log('Line {%s} was expecting an int but did not receive one...'%(key))
+
+            elif data_type == 'bool':
+                trues = ['yes','Yes','YES','ya','yeet','yea','Yea','YEA','True','true','TRUE']
+                falses = ['no','No','NO','False','false','FALSE']
+                acceptable_responses = trues + falses
+                if entry in acceptable_responses:
+                    return True
+                else:
+                    return False
+                    log('Response in line {%s} could not be converted to a bool...'%(key))
+            else:
+                log("Data type of template not recognized...")
+
+        return True
 
     def add_workout(self):
-        # Check if it exists
+        # Check if workout with the same name exists
+
+        if self.check_entries():
+            #Load json
+            try:
+                lp = open('%s/Library/%s'%(self.user_path,self.workout_selected_json),'r')
+            except:
+                log("Library file {%s}doesn't exist. Creating one..."%(self.workout_selected_json))
+                lp = open('%s/Library/%s'%(self.user_path,self.workout_selected_json),'w')
+
+            if not os.stat('%s/Library/%s'%(self.user_path,self.workout_selected_json)).st_size == 0:
+                library = json.load(lp)
+            else:
+                lp.close()
+                library = {}
+                log('Library is empty. Skipping JSON load and closing file...')
+            
+            new_entry = {}
+            for count, key in enumerate(self.workout_template):
+                new_entry.update({key : self.form_lines[count].form_line_edit.text()})
+
+            idx = len(library)
+            
+            library.update({idx : new_entry})
+            try:
+                lp = open('%s/Library/%s'%(self.user_path,self.workout_selected_json),'w')
+                json.dump(library, lp)
+                log("Library appended successfully...")
+            except:
+                log("Library could not be appended...")
+
+        else:
+            log("Invalid entries...")
         pass
 
 class PlaylistCreator(QWidget):

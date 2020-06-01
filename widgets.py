@@ -10,6 +10,7 @@ class FormEntry(QWidget):
         super().__init__()
         self.form = QHBoxLayout()
 
+        label_text = label_text + ':'
         self.form_line_label = QLabel(label_text)
         # self.form_line_label.setFrameStyle(QFrame.Panel | QFrame.Sunken)
         self.form_line_label.setAlignment(Qt.AlignVCenter | Qt.AlignRight)

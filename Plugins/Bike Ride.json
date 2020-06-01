@@ -1,1 +1,1 @@
-{"Biking": {"Type": "string", "Strava Enabled": "bool", "Duration": "string", "Difficulty [0,10]": "string", "Heart Rate\nMonitor": "bool"}}
+{"Biking": {"Title":"string","Type": "string", "Strava Enabled": "bool", "Duration": "string", "Difficulty [0,10]": "string", "Heart Rate\nMonitor": "bool"}}
