@@ -138,6 +138,8 @@ class WorkoutCreator(QWidget):
         # Remove the spacer if it exists
         try:
             self.layout.removeWidget(self.spacer)
+            self.spacer.deleteLater()
+            self.spacer = None
         except:
             log("Tried to hide the spacer, but it doesn't exist...")
 
@@ -303,22 +305,96 @@ class WorkoutPlayer(QWidget):
         self.setWindowTitle('Workout Player')
         self.first_launch = True
         if self.first_launch:
-            self.setGeometry(200,200,1920,1080)
+            self.setGeometry(600,200,1067,600)
             self.first_launch = False
             log('Set geometry of workout player window...')
-
-
         self.layout = QGridLayout()
+
+        self.stop_watch = StopWatch()
+        self.get_playlists()
 
         self.button = QPushButton('Close')
         self.button.clicked.connect(self.switch_to_main_window)
 
-        self.layout.addWidget(self.button)
+        self.layout.addWidget(self.button,0,0)
 
         self.setLayout(self.layout)
 
     def switch_to_main_window(self):
         self.go_home.emit()
+    
+    def get_playlists(self):
+        '''
+        This function loads every playlist JSON file from playlists folder
+        The string with no json extension is displayed in the combo box in the constructor
+        '''
+        self.user_name = pwd.getpwuid( os.getuid() ).pw_name
+        self.user_path = '/home/%s/PocketTrainer/'%self.user_name
+        self.playlist_files = os.listdir('%sPlaylists/'%(self.user_path))
+        log('{} playlists found...'.format(len(self.playlist_files)))
+
+        self.first_get_playlists_call = True
+        if self.first_get_playlists_call:
+            self.spacer = QLabel()
+            self.layout.addWidget(self.spacer,0,4,10,10)
+            self.first_get_playlists_call = False
+        
+        #Split the json extension of the plugin files for displaying in the QComboBox
+        self.playlist_names = []
+        for filename in self.playlist_files:
+            self.playlist_names.append(filename.split('.')[0])
+        
+        for i in range(0,50):
+            self.playlist_names.append('test_%d'%(i))
+
+
+        self.select_playlist_widget = QWidget()
+        self.select_playlist_stack = QVBoxLayout()
+
+        newfont = QFont("Arial",18, QFont.Bold) 
+        self.playlists_label = QLabel('Playlists')
+        self.playlists_label.setFrameStyle(QFrame.Panel)
+        self.playlists_label.setAlignment(Qt.AlignBottom | Qt.AlignCenter)
+        self.playlists_label.setFont(newfont)
+        self.select_playlist_stack.addWidget(self.playlists_label)
+
+        self.playlist_list = QListWidget()
+        self.playlist_list.addItems(self.playlist_names)
+        self.select_playlist_stack.addWidget(self.playlist_list)
+
+        self.select_playlist_button = QPushButton("Select Playlist")
+        self.select_playlist_button.clicked.connect(self.load_playlist)
+        self.select_playlist_stack.addWidget(self.select_playlist_button)
+
+        self.select_playlist_widget.setLayout(self.select_playlist_stack)
+        self.select_playlist_stack.setAlignment(Qt.AlignCenter)
+        self.layout.addWidget(self.select_playlist_widget,1,0,10,3)
+        
+    
+    def load_playlist(self):
+        '''
+        The current text of the combo box gets a json extension and is then loaded from the playlists
+        folder
+        '''
+        if not self.first_get_playlists_call:
+            try:
+                self.layout.removeWidget(self.spacer)
+                self.spacer.deleteLater()
+                self.spacer = None
+            except:
+                log("Tried to remove the workout player spacer, but it doesn't exist...")
+
+        
+        pass
+    
+    def display_workout(self,workout):
+        '''
+        This function is called once for every workout in a playlist
+        This function is responsible for:
+            - displaying all characteristics in appropriate widgets
+            - displaying a timer
+        '''
+        pass
 
 class Controller(object):
 
