@@ -3,6 +3,7 @@
 from PyQt5.QtWidgets import *
 from PyQt5.QtCore import *
 from PyQt5.QtGui import *
+from PyQt5.QtSvg import *
 from widgets import *
 from utils import *
 
@@ -39,21 +40,23 @@ class YogaMainWindow(QWidget,FilePaths):
         self.main_title = QLabel() 
         self.main_title.setPixmap(QPixmap('%sImages/main.png'%(self.user_path)))
         self.main_title.setFixedSize(400,200)
-        # self.main_title.setIconSize(QSize(400,200))
         self.layout.addWidget(self.main_title)
 
         # Workout Creator Button
         self.workout_creator_button = QPushButton('Workout Creator')
+        # self.workout_creator_button.setFixedSize(150,100)
         self.workout_creator_button.clicked.connect(self.switch_to_workout_creator)
         self.layout.addWidget(self.workout_creator_button)
 
         # Playlist Creator Button
         self.playlist_creator_button = QPushButton('Playlist Creator')
+        # self.playlist_creator_button.setFixedSize(150,100)
         self.playlist_creator_button.clicked.connect(self.switch_to_playlist_creator)
         self.layout.addWidget(self.playlist_creator_button)
 
         # Workout Player Button
         self.workout_player_button = QPushButton('Workout Player')
+        # self.workout_player_button.setFixedSize(150,100)
         self.workout_player_button.clicked.connect(self.switch_to_start_session)
         self.layout.addWidget(self.workout_player_button)
 
