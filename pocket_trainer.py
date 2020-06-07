@@ -19,7 +19,7 @@ import random as rnd
 import threading
 import math
 
-class YogaMainWindow(QWidget):
+class YogaMainWindow(QWidget,FilePaths):
     workout_creator_signal = pyqtSignal()
     playlist_creator_signal = pyqtSignal()
     workout_player_signal = pyqtSignal()
@@ -35,6 +35,13 @@ class YogaMainWindow(QWidget):
 
         self.layout = QVBoxLayout()
 
+        # Title image
+        self.main_title = QLabel() 
+        self.main_title.setPixmap(QPixmap('%sImages/main.png'%(self.user_path)))
+        self.main_title.setFixedSize(400,200)
+        # self.main_title.setIconSize(QSize(400,200))
+        self.layout.addWidget(self.main_title)
+
         # Workout Creator Button
         self.workout_creator_button = QPushButton('Workout Creator')
         self.workout_creator_button.clicked.connect(self.switch_to_workout_creator)
@@ -49,6 +56,8 @@ class YogaMainWindow(QWidget):
         self.workout_player_button = QPushButton('Workout Player')
         self.workout_player_button.clicked.connect(self.switch_to_start_session)
         self.layout.addWidget(self.workout_player_button)
+
+        self.layout.setAlignment(Qt.AlignCenter)
 
         self.setLayout(self.layout)
 
@@ -314,8 +323,8 @@ class WorkoutPlayer(QWidget,FilePaths):
             log('Set geometry of workout player window...')
 
         self.images_path = '%s/Images'%(self.user_path)
-        self.play_path = '%s/play.svg'%(self.images_path)
-        self.pause_path = '%s/pause.svg'%(self.images_path)
+        self.play_path = '%s/play.png'%(self.images_path)
+        self.pause_path = '%s/pause.png'%(self.images_path)
 
         self.layout = QGridLayout()
 
@@ -440,8 +449,14 @@ class WorkoutPlayer(QWidget,FilePaths):
             
             hours = self.curr_time/3600.0
             remain = hours - math.floor(hours)
+            if hours < 0.01: # Get rid of e notation which screws up the coming split
+                hours = 0.0
+
             minutes = remain * 60.0
             remain = minutes - math.floor(minutes)
+            if minutes < 0.01: # Get rid of e notation which screws up the coming split
+                minutes = 0.0
+
             seconds = remain * 60.0
 
             hours,scrap = str(hours).split('.')
