@@ -41,9 +41,6 @@ class WorkoutPlayer(QWidget,FilePaths):
         self.play_path = '%s/play.png'%(self.images_path)
         self.pause_path = '%s/pause.png'%(self.images_path)
 
-        self.threadpool = QThreadPool()
-        print("Multithreading with maximum %d threads" % self.threadpool.maxThreadCount())
-
         # Set base layout type for widget
         self.layout = QGridLayout()
 
@@ -185,13 +182,13 @@ class WorkoutPlayer(QWidget,FilePaths):
         with open('%sPlaylists/%s'%(self.user_path,playlist_file_name)) as fp:
             playlist = json.load(fp)
 
-        for workout in playlist:
+        for plugin in playlist:
+            print(plugin)
+            workout = playlist[plugin]
             print(workout)
-            pass
 
-    def done_script(self):
-        print('thread doing nothing...')
-        pass
+            # some logic to wait for the workout time to hit the playlist stated value
+            pass
 
     def pause_play(self):
         '''
@@ -249,26 +246,3 @@ class WorkoutPlayer(QWidget,FilePaths):
 
             time_label = time_vals[0] +' : '+time_vals[1]+' : '+time_vals[2]+'.'+dec
             self.timer_label.setText(time_label)
-    
-
-class WorkoutSignals(QObject):
-    done = pyqtSignal()
-
-class DisplayWorkouts(QRunnable):
-    '''
-    This function is called once for every workout in a playlist
-    This function is responsible for:
-        - displaying all characteristics in appropriate widgets
-        - displaying a timer
-    '''
-    def __init__(self, playlist,layout):
-        super().__init__()
-
-        self.signals = WorkoutSignals()          
-
-    @pyqtSlot()
-    def run(self):
-        for i in range(10):
-            print('thread doing nothing...')
-            time.sleep(1)
-            self.signals.done.emit()
