@@ -7,48 +7,48 @@
    xmlns="http://www.w3.org/2000/svg"
    xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
    xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
-   inkscape:export-ydpi="96"
-   inkscape:export-xdpi="96"
-   inkscape:export-filename="/home/kurt/PocketTrainer/Images/main.png"
-   sodipodi:docname="main.svg"
-   inkscape:version="1.0 (6e3e5246a0, 2020-05-07)"
-   id="svg251"
-   version="1.1"
-   viewBox="0 0 105.83333 52.916668"
+   width="400"
    height="200"
-   width="400">
+   viewBox="0 0 105.83333 52.916668"
+   version="1.1"
+   id="svg251"
+   inkscape:version="1.0 (6e3e5246a0, 2020-05-07)"
+   sodipodi:docname="main.svg"
+   inkscape:export-filename="/home/kurt/PocketTrainer/Images/main.png"
+   inkscape:export-xdpi="96"
+   inkscape:export-ydpi="96">
   <defs
      id="defs245">
     <rect
-       id="rect284"
-       height="16.273771"
-       width="30.935545"
+       x="36.498712"
        y="31.319569"
-       x="36.498712" />
+       width="30.935545"
+       height="16.273771"
+       id="rect284" />
   </defs>
   <sodipodi:namedview
-     inkscape:window-maximized="1"
-     inkscape:window-y="0"
-     inkscape:window-x="0"
-     inkscape:window-height="1043"
-     inkscape:window-width="1920"
-     units="px"
-     showgrid="false"
-     inkscape:document-rotation="0"
-     inkscape:current-layer="layer1"
-     inkscape:document-units="mm"
-     inkscape:cy="102.55692"
-     inkscape:cx="121.0351"
-     inkscape:zoom="2.8"
-     inkscape:pageshadow="2"
-     inkscape:pageopacity="0.0"
-     borderopacity="1.0"
-     bordercolor="#666666"
+     id="base"
      pagecolor="#ffffff"
-     id="base">
+     bordercolor="#666666"
+     borderopacity="1.0"
+     inkscape:pageopacity="0.0"
+     inkscape:pageshadow="2"
+     inkscape:zoom="2.8"
+     inkscape:cx="209.18476"
+     inkscape:cy="96.099178"
+     inkscape:document-units="mm"
+     inkscape:current-layer="layer1"
+     inkscape:document-rotation="0"
+     showgrid="false"
+     units="px"
+     inkscape:window-width="1920"
+     inkscape:window-height="1043"
+     inkscape:window-x="0"
+     inkscape:window-y="0"
+     inkscape:window-maximized="1">
     <inkscape:grid
-       id="grid265"
-       type="xygrid" />
+       type="xygrid"
+       id="grid265" />
   </sodipodi:namedview>
   <metadata
      id="metadata248">
@@ -63,35 +63,35 @@
     </rdf:RDF>
   </metadata>
   <g
-     id="layer1"
+     inkscape:label="Layer 1"
      inkscape:groupmode="layer"
-     inkscape:label="Layer 1">
+     id="layer1">
     <rect
-       width="105.83334"
-       y="-8.8817842e-16"
-       x="0"
-       height="52.916668"
+       style="fill:#ff9955;stroke-width:0.37859"
        id="rect263"
-       style="fill:#ff9955;stroke-width:0.37859" />
+       height="52.916668"
+       x="0"
+       y="-8.8817842e-16"
+       width="105.83334" />
     <text
-       id="text278"
-       y="19.982969"
-       x="52.436504"
-       style="font-style:normal;font-weight:normal;font-size:11.1125px;line-height:1.35;font-family:sans-serif;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.264583"
-       xml:space="preserve"><tspan
-         style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-size:11.1125px;font-family:sans-serif;-inkscape-font-specification:'sans-serif Bold';text-align:center;text-anchor:middle;fill:#4d4d4d;stroke-width:0.264583"
-         y="19.982969"
-         x="52.436504"
+       xml:space="preserve"
+       style="font-style:normal;font-weight:normal;font-size:11.5305px;line-height:1.35;font-family:sans-serif;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.274536"
+       x="52.410038"
+       y="22.981833"
+       id="text278"><tspan
+         sodipodi:role="line"
          id="tspan276"
-         sodipodi:role="line">Pocket Trainer</tspan><tspan
-         id="tspan280"
-         style="font-style:italic;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:11.1125px;font-family:sans-serif;-inkscape-font-specification:'sans-serif Italic';text-align:center;text-anchor:middle;fill:#4d4d4d;stroke-width:0.264583"
-         y="34.984844"
-         x="52.436504"
-         sodipodi:role="line">V1.0</tspan></text>
+         x="52.410038"
+         y="22.981833"
+         style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-size:11.5305px;font-family:sans-serif;-inkscape-font-specification:'sans-serif Bold';text-align:center;text-anchor:middle;fill:#4d4d4d;stroke-width:0.274536">Pocket Trainer</tspan><tspan
+         sodipodi:role="line"
+         x="52.410038"
+         y="38.548008"
+         style="font-style:italic;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:11.5305px;font-family:sans-serif;-inkscape-font-specification:'sans-serif Italic';text-align:center;text-anchor:middle;fill:#4d4d4d;stroke-width:0.274536"
+         id="tspan280">V1.0</tspan></text>
     <text
-       style="fill:black;fill-opacity:1;line-height:1.25;stroke:none;font-family:sans-serif;font-style:normal;font-weight:normal;font-size:10.58333333px;white-space:pre;shape-inside:url(#rect284);"
+       xml:space="preserve"
        id="text282"
-       xml:space="preserve" />
+       style="fill:black;fill-opacity:1;line-height:1.25;stroke:none;font-family:sans-serif;font-style:normal;font-weight:normal;font-size:10.58333333px;white-space:pre;shape-inside:url(#rect284);" />
   </g>
 </svg>

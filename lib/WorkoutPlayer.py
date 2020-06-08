@@ -41,15 +41,21 @@ class WorkoutPlayer(QWidget,FilePaths):
         self.play_path = '%s/play.png'%(self.images_path)
         self.pause_path = '%s/pause.png'%(self.images_path)
 
+        self.threadpool = QThreadPool()
+        print("Multithreading with maximum %d threads" % self.threadpool.maxThreadCount())
+
+        # Set base layout type for widget
         self.layout = QGridLayout()
 
+        # Load all playlists and add them to the
         self.get_playlists()
 
+        # Close button to return to the main window
         self.button = QPushButton('Close')
         self.button.clicked.connect(self.switch_to_main_window)
-
         self.layout.addWidget(self.button,0,0)
 
+        # Set base layout to the widget
         self.setLayout(self.layout)
 
     def switch_to_main_window(self):
@@ -60,34 +66,32 @@ class WorkoutPlayer(QWidget,FilePaths):
         This function loads every playlist JSON file from playlists folder
         The string with no json extension is displayed in the combo box in the constructor
         '''
-        # self.user_name = pwd.getpwuid( os.getuid() ).pw_name
-        # self.user_path = '/home/%s/PocketTrainer/'%self.user_name
-        self.playlist_files = os.listdir('%sPlaylists/'%(self.user_path))
-        log('{} playlists found...'.format(len(self.playlist_files)))
-
+        # Spacer that reserves room for the workout window
         self.first_get_playlists_call = True
         if self.first_get_playlists_call:
             self.spacer = QLabel()
             self.layout.addWidget(self.spacer,0,4,10,10)
             # self.first_get_playlists_call = False
+
+        # Get all files in the Playlists folder
+        self.playlist_files = os.listdir('%sPlaylists/'%(self.user_path))
+        log('{} playlists found...'.format(len(self.playlist_files)))
         
         #Split the json extension of the plugin files for displaying in the QComboBox
         self.playlist_names = []
         for filename in self.playlist_files:
             self.playlist_names.append(filename.split('.')[0])
-        
-        for i in range(0,50):
-            self.playlist_names.append('test_%d'%(i))
 
-
+        #####################################################################
+        ### Container widget for the playlist viewer
+        #####################################################################
         self.select_playlist_widget = QWidget()
         self.select_playlist_stack = QVBoxLayout()
 
-        newfont = QFont("Arial",18, QFont.Bold) 
-        self.playlists_label = QLabel('Playlists')
+        self.playlists_label = QLabel('Playlists') #'Playlists'
         self.playlists_label.setFrameStyle(QFrame.Panel)
         self.playlists_label.setAlignment(Qt.AlignBottom | Qt.AlignCenter)
-        self.playlists_label.setFont(newfont)
+        self.playlists_label.setStyleSheet("font:bold italic 24px; color: #353535; background-color: #ff9955")
         self.select_playlist_stack.addWidget(self.playlists_label)
 
         self.playlist_list = QListWidget()
@@ -123,13 +127,27 @@ class WorkoutPlayer(QWidget,FilePaths):
             except:
                 log("Tried to remove the workout window widget, but it doesn't exist...")
 
+        #####################################################################
+        ### Container widget for the workout viewer
+        #####################################################################
         self.workout_window_widget = QWidget()
         self.workout_window = QVBoxLayout()
 
+        # Container for the workout information
+        # The content of this container is determined based on the plugin specified
+        #   in the playlist
+        self.workout_template_widget = QWidget()
+        self.workout_template = QVBoxLayout()
+        self.workout_template_widget.setLayout(self.workout_template)
+        self.workout_template.setAlignment(Qt.AlignVCenter)
+        self.workout_window.addWidget(self.workout_template_widget)
+
+        # Set the label to display time
         self.timer_label = QLabel('00 : 00 : 00.00')
         self.timer_label.setAlignment(Qt.AlignVCenter | Qt.AlignCenter)
         self.workout_window.addWidget(self.timer_label)
 
+        # Create a timer widget
         self.timer = QTimer()
         self.timer_count = 0.0
         self.timer_base = 100 # in milliseconds
@@ -137,19 +155,49 @@ class WorkoutPlayer(QWidget,FilePaths):
         self.timer.timeout.connect(self.update_timer)
         self.timer.start()
 
+        # Button that toggles the pause attribute
         self.pause_play_button = QPushButton() 
         self.pause_play_button.setIcon(QIcon(self.play_path))
         self.pause_play_button.setIconSize(QSize(50,50))
-        # self.pause_play_button.setFixedSize(100,100)
-        self.pause_play_button.setStyleSheet("border-radius : 50; border : 0px solid black") 
+        self.pause_play_button.setStyleSheet("border-radius : 25") 
         self.pause_play_button.clicked.connect(self.pause_play)
         self.workout_window.addWidget(self.pause_play_button)
 
+        # gibberish labels for testing
+        self.workout_name = QLabel('Workout Name')
+        self.workout_template.addWidget(self.workout_name)
+        self.workout_image = QLabel('IMG')
+        self.workout_template.addWidget(self.workout_image)
+        self.body_half = QLabel('Body Half')
+        self.workout_template.addWidget(self.body_half)
+
+        # Add widgets to the workout viewer
         self.workout_window_widget.setLayout(self.workout_window)
         self.workout_window.setAlignment(Qt.AlignCenter)
+        # Add workout viewer to parent
         self.layout.addWidget(self.workout_window_widget,0,4,10,10)
 
+        #####################################################################
+        ### Play workout
+        #####################################################################
+        self.selected_playlist = self.playlist_names[self.playlist_list.currentRow()]
+        playlist_file_name = self.selected_playlist + '.json'
+        with open('%sPlaylists/%s'%(self.user_path,playlist_file_name)) as fp:
+            playlist = json.load(fp)
+
+        for workout in playlist:
+            print(workout)
+            pass
+
+    def done_script(self):
+        print('thread doing nothing...')
+        pass
+
     def pause_play(self):
+        '''
+        When this function is called, the class attribute 'pause'
+        is toggled
+        '''
         if self.pause:
             self.pause = False
             self.pause_play_button.setIcon(QIcon(self.pause_path))
@@ -158,6 +206,10 @@ class WorkoutPlayer(QWidget,FilePaths):
             self.pause_play_button.setIcon(QIcon(self.play_path))
 
     def update_timer(self):
+        '''
+        If the pause attribute is True, alter the global time
+        If the pause attribute is False, alter the workout time
+        '''
         if not self.pause:
             self.timer_count += 1.0
             self.curr_time = self.timer_count*(float(self.timer_base)/1000.0)
@@ -198,11 +250,25 @@ class WorkoutPlayer(QWidget,FilePaths):
             time_label = time_vals[0] +' : '+time_vals[1]+' : '+time_vals[2]+'.'+dec
             self.timer_label.setText(time_label)
     
-    def display_workout(self,workout):
-        '''
-        This function is called once for every workout in a playlist
-        This function is responsible for:
-            - displaying all characteristics in appropriate widgets
-            - displaying a timer
-        '''
-        pass
+
+class WorkoutSignals(QObject):
+    done = pyqtSignal()
+
+class DisplayWorkouts(QRunnable):
+    '''
+    This function is called once for every workout in a playlist
+    This function is responsible for:
+        - displaying all characteristics in appropriate widgets
+        - displaying a timer
+    '''
+    def __init__(self, playlist,layout):
+        super().__init__()
+
+        self.signals = WorkoutSignals()          
+
+    @pyqtSlot()
+    def run(self):
+        for i in range(10):
+            print('thread doing nothing...')
+            time.sleep(1)
+            self.signals.done.emit()

@@ -61,7 +61,6 @@ class YogaMainWindow(QWidget,FilePaths):
         self.layout.addWidget(self.workout_player_button)
 
         self.layout.setAlignment(Qt.AlignCenter)
-
         self.setLayout(self.layout)
 
     def switch_to_workout_creator(self):
