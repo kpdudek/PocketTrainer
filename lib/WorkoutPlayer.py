@@ -26,9 +26,8 @@ class WorkoutPlayer(QWidget,FilePaths):
     '''
     go_home = pyqtSignal()
 
-    pause = True
-    start_time = datetime.datetime.now()
-    curr_time = 0.0
+    pause = True # pause and play the workout
+    previous_plugin = None
 
     def __init__(self):
         super().__init__()
@@ -61,6 +60,11 @@ class WorkoutPlayer(QWidget,FilePaths):
         self.setLayout(self.layout)
 
     def switch_to_main_window(self):
+        '''
+        This function emits the top level widget's go home signal
+        The controller which is managing the top level widgets connects to this signal and will hide
+            this widget
+        '''
         self.go_home.emit()
     
     def get_playlists(self):
@@ -69,14 +73,8 @@ class WorkoutPlayer(QWidget,FilePaths):
         The string with no json extension is displayed in the combo box in the constructor
         '''
 
+        # Middle layout contains the playlist selector and the playlist player
         self.middle_layout = QHBoxLayout()
-
-        # Spacer that reserves room for the workout window
-        # self.first_get_playlists_call = True
-        # if self.first_get_playlists_call:
-        #     self.spacer = QLabel()
-        #     self.layout.addWidget(self.spacer)
-        #     # self.first_get_playlists_call = False
 
         # Get all files in the Playlists folder
         self.playlist_files = os.listdir('%sPlaylists/'%(self.user_path))
@@ -87,31 +85,33 @@ class WorkoutPlayer(QWidget,FilePaths):
         for filename in self.playlist_files:
             self.playlist_names.append(filename.split('.')[0])
 
-        #####################################################################
-        ### Container widget for the playlist viewer
-        #####################################################################
-        # self.select_playlist_widget = QWidget()
+        # Layout for selecting a playlist. Contains:
+        #   - Title label
+        #   - Filters (TODO)
+        #   - Playlists list
+        #   - Select button
         self.select_playlist_stack = QVBoxLayout()
 
-        self.playlists_label = QLabel('Playlists') #'Playlists'
+        # Title label
+        self.playlists_label = QLabel('Playlists')
         self.playlists_label.setFrameStyle(QFrame.Panel)
         self.playlists_label.setAlignment(Qt.AlignBottom | Qt.AlignCenter)
         self.playlists_label.setStyleSheet("font:bold italic 24px; color: #353535; background-color: #ff9955")
         self.select_playlist_stack.addWidget(self.playlists_label)
 
+        # List of all/filtered playlists
         self.playlist_list = QListWidget()
         self.playlist_list.addItems(self.playlist_names)
         self.select_playlist_stack.addWidget(self.playlist_list)
 
+        # Select playlist button. This button loads the playlist into the player
         self.select_playlist_button = QPushButton("Select Playlist")
         self.select_playlist_button.clicked.connect(self.load_playlist)
         self.select_playlist_stack.addWidget(self.select_playlist_button)
         self.select_playlist_stack.setAlignment(Qt.AlignCenter)
 
+        # Add playlist selector into the middle layout and then add middle to the top level layout
         self.middle_layout.addLayout(self.select_playlist_stack)
-
-        # self.select_playlist_widget.setLayout(self.select_playlist_stack)
-        
         self.layout.addLayout(self.middle_layout)
 
     def load_playlist(self):
@@ -119,43 +119,23 @@ class WorkoutPlayer(QWidget,FilePaths):
         The current text of the combo box gets a json extension and is then loaded from the playlists
         folder
         '''
-        self.previous_plugin = None
-        self.pause = True
-        self.first_play = True
-        self.workout_index = 0
-
         try:
             self.middle_layout.removeWidget(self.workout_window_widget)
             self.workout_window_widget.deleteLater()
             self.workout_window_widget = None
         except:
             log("Tried to remove the workout window, but it doesn't exist...")
-        
-        # if self.first_get_playlists_call:
-        #     try:
-        #         self.layout.removeWidget(self.spacer)
-        #         self.spacer.deleteLater()
-        #         self.spacer = None
-        #         self.first_get_playlists_call = False
-        #     except:
-        #         log("Tried to remove the workout player spacer, but it doesn't exist...")
-        # else:
-        #     try:
-        #         self.layout.removeWidget(self.workout_display_widget)
-        #         self.workout_timer_widget.deleteLater()
-        #         self.workout_timer_widget = None
-        #     except:
-        #         log("Tried to remove the workout window widget, but it doesn't exist...")
 
         #####################################################################
         ### Container widget for the workout viewer
         #####################################################################
-        # self.workout_timer_widget = QWidget()
         self.workout_window_widget = QWidget()
         self.workout_window = QVBoxLayout()
         self.workout_window_widget.setLayout(self.workout_window)
 
-
+        # Layout for all timing aspects
+        #   - label to display workout time
+        #   - buttons for play/pause, skip
         self.workout_timer = QVBoxLayout()
         self.workout_timer_buttons = QHBoxLayout()
 
@@ -180,27 +160,20 @@ class WorkoutPlayer(QWidget,FilePaths):
         self.pause_play_button.clicked.connect(self.pause_play)
         self.workout_timer_buttons.addWidget(self.pause_play_button)
 
-        # Add widgets to the workout viewer
-        # self.workout_timer_widget.setLayout(self.workout_timer)
+        # Center justify and add timing buttons layout to the timing layout
         self.workout_timer.setAlignment(Qt.AlignCenter)
         self.workout_timer_buttons.setAlignment(Qt.AlignCenter)
         self.workout_timer.addLayout(self.workout_timer_buttons)
 
-        # Add workout viewer to parent
-        # self.layout.addWidget(self.workout_timer_widget)
-
         # Container for the workout information
         # The content of this container is determined based on the plugin specified
         #   in the playlist
-        # self.workout_display_widget = QWidget()
         self.workout_display = QVBoxLayout()
 
         self.workout_window.addLayout(self.workout_display,3)
         self.workout_window.addLayout(self.workout_timer)
-        # self.workout_display_widget.setLayout(self.workout_display)
-        # self.workout_display.setAlignment(Qt.AlignVCenter)
+
         self.middle_layout.addWidget(self.workout_window_widget,3)
-        # self.layout.addWidget(self.workout_display_widget)
 
         # Load selected playlist
         self.selected_playlist = self.playlist_names[self.playlist_list.currentRow()]
@@ -208,14 +181,13 @@ class WorkoutPlayer(QWidget,FilePaths):
         with open('%sPlaylists/%s'%(self.user_path,playlist_file_name)) as fp:
             self.playlist = json.load(fp)
 
+        self.start_time = datetime.datetime.now() # When the workout started
+        self.curr_time = 0.0
+
         self.curr_idx = 0
         self.workout_idx = 0
         self.update_workout()
         self.workout_idx = 1
-
-        # self.workout_player = WorkoutPlayer(playlist)
-        # self.workout_player.current_workout_index = 0
-        # self.workout_player.done_signal.connect(self.play_workout)
 
     def update_workout(self):
         '''
@@ -223,20 +195,10 @@ class WorkoutPlayer(QWidget,FilePaths):
         This function is called whenever play/pause is pressed, so it must be able to pause the workout currently playing
         When the workout is finished, the index is increased and the function recurses
         '''
-        # Check the status of self.pause in workout_player
-        # self.workout_player.play()
-
         if not self.curr_idx == self.workout_idx:
             for plugin in self.playlist:
                 workout = self.playlist[plugin]
                 plugin,index = plugin.split(',')
-
-                # try:
-                #     self.layout.removeWidget(self.workout_display_widget)
-                #     self.workout_display_widget.deleteLater()
-                #     self.workout_display_widget = None
-                # except:
-                #     log('Tried to remove the workout template but it doesnt exist...')
 
                 if not (plugin == self.previous_plugin):
                     # Load the selected workouts plugin json file
@@ -252,11 +214,6 @@ class WorkoutPlayer(QWidget,FilePaths):
                         self.workout_name = key
                         self.workout_template = self.workout_plugin[key]
                 
-                # self.workout_display_widget = QWidget()
-                # self.workout_display = QVBoxLayout()
-                # self.workout_display_widget.setLayout(self.workout_display)
-                # self.workout_display.setAlignment(Qt.AlignVCenter)
-                
                 # Populating form lines with strings from the plugin template
                 self.workout_fields = []
                 for key in self.workout_template:
@@ -267,12 +224,6 @@ class WorkoutPlayer(QWidget,FilePaths):
                 for count, key in enumerate(self.workout_fields):
                     self.workout_display.addLayout(self.workout_fields[count].form)
 
-                # self.workout_display_widget.setLayout(self.workout_display)
-                # self.workout_timer.addWidget(self.workout_display_widget)
-                # self.workout_display.addLayout(self.workout_display)
-                # self.workout_display_widget.update()
-
-                # self.workout_window.addLayout(self.workout_display)
                 self.previous_plugin = plugin
 
             self.curr_idx += 1
@@ -282,13 +233,15 @@ class WorkoutPlayer(QWidget,FilePaths):
         When this function is called, the class attribute 'pause'
         is toggled
         '''
+        # Play the workout
         if self.pause:
             self.pause = False
             self.pause_play_button.setIcon(QIcon(self.pause_path))
-            
-            # print(self.curr_time)
             self.update_workout()
 
+            print(str(self.curr_time).split('.')[0]+'.'+ str(self.curr_time).split('.')[1][0])
+
+        # Pause the workout
         else:
             self.pause = True
             self.pause_play_button.setIcon(QIcon(self.play_path))
