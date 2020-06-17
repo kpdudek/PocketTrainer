@@ -20,3 +20,14 @@ class FormEntry(QWidget):
         self.form_line_edit = QLineEdit()
         self.form_line_edit.setText(line_edit_text)
         self.form.addWidget(self.form_line_edit)
+    
+class WorkoutField(QWidget):
+
+    def __init__(self,text):
+        super().__init__()
+        self.form = QHBoxLayout()
+
+        self.form_line_label = QLabel(text)
+        self.form_line_label.setAlignment(Qt.AlignVCenter | Qt.AlignCenter)
+        # self.form_line_label.setFixedSize(120, 40)
+        self.form.addWidget(self.form_line_label)
