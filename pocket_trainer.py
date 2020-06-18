@@ -95,7 +95,7 @@ class Controller(object):
         self.workout_player.show()
 
 def main():
-    log('Session started...')
+    log('Session started...',color='g')
 
     app = QApplication(sys.argv)
 

@@ -36,7 +36,7 @@ class WorkoutCreator(QWidget,FilePaths):
         if self.first_launch:
             self.setGeometry(200,200,600,400)
             self.first_launch = False
-            log('Set geometry of workout creator window...')
+            log('Set geometry of workout creator window...',color='g')
 
         self.layout = QGridLayout()
         self.starting_row = 2 # Starting row for the form

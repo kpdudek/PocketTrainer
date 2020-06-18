@@ -36,7 +36,7 @@ class WorkoutPlayer(QWidget,FilePaths):
         if self.first_launch:
             self.setGeometry(200,200,1067,600)
             self.first_launch = False
-            log('Set geometry of workout player window...')
+            log('Set geometry of workout player window...',color='g')
 
         self.images_path = '%s/Images'%(self.user_path)
         self.play_path = '%s/play.png'%(self.images_path)
@@ -267,43 +267,12 @@ class WorkoutPlayer(QWidget,FilePaths):
 
             self.workout_fields_widget.setLayout(self.workout_fields_layout)
             self.workout_display.addWidget(self.workout_fields_widget)
-            self.previous_plugin = plugin
-            # for plugin in self.playlist:
-                # workout = self.playlist[plugin]
-                # plugin,index = plugin.split(',')
-
-                # if not (plugin == self.previous_plugin):
-                #     # Load the selected workouts plugin json file
-                #     self.plugin_json = '%s.json'%(plugin)
-                #     try:
-                #         fp = open('%s/Plugins/%s'%(self.user_path,self.plugin_json),'r')
-                #         self.workout_plugin = json.load(fp)
-                #         log("Loaded plugin {%s}..."%(plugin))
-                #     except:
-                #         log("Failed to load plugin {%s}..."%(plugin))
-                    
-                #     for key in self.workout_plugin:
-                #         self.workout_name = key
-                #         self.workout_template = self.workout_plugin[key]
-                
-                # # Populating form lines with strings from the plugin template
-                # self.workout_fields = []
-                # for key in self.workout_template:
-                #     val = key
-                #     self.workout_fields.append(WorkoutField(workout[key]))
-                
-                # # Add form widget to the parent widget
-                # for count, key in enumerate(self.workout_fields):
-                #     self.workout_display.addLayout(self.workout_fields[count].form)
-
-                # self.previous_plugin = plugin
-
-            
+            self.previous_plugin = plugin            
 
     def pause_play(self):
         '''
         When this function is called, the class attribute 'pause'
-        is toggled
+        is toggled and then the workout is updated
         '''
         # Play the workout
         if self.pause:
@@ -311,7 +280,7 @@ class WorkoutPlayer(QWidget,FilePaths):
             self.pause_play_button.setIcon(QIcon(self.pause_path))
             self.update_workout()
 
-            print(str(self.curr_time).split('.')[0]+'.'+ str(self.curr_time).split('.')[1][0])
+            log('Split time: ' + str(self.curr_time).split('.')[0]+'.'+ str(self.curr_time).split('.')[1][0])
 
         # Pause the workout
         else:

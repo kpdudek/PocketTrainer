@@ -1,1 +1,32 @@
-{"0": {"Pose Name": "Downward Dog", "Body Area": "Lower back", "Image Name": "dd.img", "Duration": "3", "Difficulty [0,10]": "8", "Focus": "Stretching", "Blocks Required": "true"}, "1": {"Pose Name": "Back Bend", "Body Area": "Back", "Image Name": "back.png", "Duration": "3", "Difficulty [0,10]": "6", "Focus": "Stretch", "Blocks Required": "no"}, "2": {"Pose Name": "Back Bend", "Body Area": "lower back", "Image Name": "back_bend.png", "Duration": "3", "Difficulty [0,10]": "4", "Focus": "stretching", "Blocks Required": "no"}}
+{
+    "0": {
+        "Pose Name": "Downward Dog",
+        "Body Area": "Lower back",
+        "Image Name": "dd.img",
+        "Duration": "3",
+        "Difficulty [0,10]": "8",
+        "Focus": "Stretching",
+        "Blocks Required": "true",
+        "Both Sides": "false"
+    },
+    "1": {
+        "Pose Name": "Back Bend",
+        "Body Area": "Back",
+        "Image Name": "back.png",
+        "Duration": "3",
+        "Difficulty [0,10]": "6",
+        "Focus": "Stretch",
+        "Blocks Required": "no",
+        "Both Sides": "false"
+    },
+    "2": {
+        "Pose Name": "Back Bend",
+        "Body Area": "lower back",
+        "Image Name": "back_bend.png",
+        "Duration": "3",
+        "Difficulty [0,10]": "4",
+        "Focus": "stretching",
+        "Blocks Required": "no",
+        "Both Sides": "false"
+    }
+}

@@ -32,7 +32,7 @@ class YogaMainWindow(QWidget,FilePaths):
         if self.first_launch:
             self.setGeometry(200,200,400,600)
             self.first_launch = False
-            log('Set geometry of main window...')
+            log('Set geometry of main window...',color='g')
 
         self.layout = QVBoxLayout()
 
