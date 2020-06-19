@@ -28,5 +28,25 @@
         "Focus": "stretching",
         "Blocks Required": "no",
         "Both Sides": "false"
+    },
+    "Workout Name:": {
+        "Pose Name": "dd",
+        "Body Area": "dd",
+        "Image Name": "d",
+        "Duration": "4",
+        "Difficulty [0,10]": "3",
+        "Focus": "d",
+        "Blocks Required": "no",
+        "Both Sides": "no"
+    },
+    "test": {
+        "Pose Name": "test",
+        "Body Area": "tes",
+        "Image Name": "te",
+        "Duration": "4",
+        "Difficulty [0,10]": "3",
+        "Focus": "fe",
+        "Blocks Required": "no",
+        "Both Sides": "no"
     }
 }

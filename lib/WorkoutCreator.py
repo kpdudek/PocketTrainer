@@ -135,9 +135,13 @@ class WorkoutCreator(QWidget,FilePaths):
         # Stack the form lines in a QVBoxLayout
         self.form_widget = QWidget()
         form = QVBoxLayout()
+
+        self.workout_name = FormEntry('Workout Name','Type here...')
+        form.addWidget(self.workout_name)
+
         # Add form widget to the parent widget
         for count, key in enumerate(self.form_lines):
-            form.addLayout(key.form)
+            form.addWidget(key)
         self.form_widget.setLayout(form)
         self.layout.addWidget(self.form_widget,self.starting_row,0,self.height,self.width+2)
 
@@ -212,8 +216,9 @@ class WorkoutCreator(QWidget,FilePaths):
                 new_entry.update({key : self.form_lines[count].form_line_edit.text()})
 
             idx = len(library)
+            workout_name = self.workout_name.form_line_edit.text()
             
-            library.update({idx : new_entry})
+            library.update({workout_name : new_entry})
             try:
                 lp = open('%s/Library/%s'%(self.user_path,self.workout_selected_json),'w')
                 json.dump(library, lp)

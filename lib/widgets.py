@@ -20,6 +20,8 @@ class FormEntry(QWidget):
         self.form_line_edit = QLineEdit()
         self.form_line_edit.setText(line_edit_text)
         self.form.addWidget(self.form_line_edit)
+        
+        self.setLayout(self.form)
     
 class WorkoutField(QWidget):
 

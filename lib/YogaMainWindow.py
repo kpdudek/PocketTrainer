@@ -37,35 +37,58 @@ class YogaMainWindow(QWidget,FilePaths):
         self.layout = QVBoxLayout()
 
         # Title image
-        self.main_title = QLabel() 
-        self.main_title.setPixmap(QPixmap('%sImages/main.png'%(self.user_path)))
-        self.main_title.setFixedSize(400,200)
-        self.layout.addWidget(self.main_title)
+        # self.main_title = QLabel() 
+        # self.main_title.setPixmap(QPixmap('%sImages/main.png'%(self.user_path)))
+        # self.main_title.setFixedSize(400,200)
+        # self.layout.addWidget(self.main_title)
 
+        self.layout.addStretch()
+
+        # Title label
+        self.title = QLabel('\nPocket Trainer\nV1.0\n')
+        self.title.setFrameStyle(QFrame.Panel)
+        self.title.setAlignment(Qt.AlignVCenter | Qt.AlignCenter)
+        self.title.setStyleSheet("font:bold italic 48px; color: #353535; background-color: #ff9955")
+        self.layout.addWidget(self.title)
+
+        self.layout.addStretch()
+
+        self.options = QVBoxLayout()
         # Workout Creator Button
         self.workout_creator_button = QPushButton('Workout Creator')
-        # self.workout_creator_button.setFixedSize(150,100)
+        # self.workout_creator_button.setFixedSize(250,100)
         self.workout_creator_button.clicked.connect(self.switch_to_workout_creator)
-        self.layout.addWidget(self.workout_creator_button)
+        self.workout_creator_button.setStyleSheet("font:bold 16px")
+        self.options.addWidget(self.workout_creator_button)
 
         # Playlist Creator Button
-        self.playlist_creator_button = QPushButton('Playlist Creator')
-        # self.playlist_creator_button.setFixedSize(150,100)
+        self.playlist_creator_button = QPushButton('Playlist Editor')
+        # self.playlist_creator_button.setFixedSize(250,100)
         self.playlist_creator_button.clicked.connect(self.switch_to_playlist_creator)
-        self.layout.addWidget(self.playlist_creator_button)
+        self.playlist_creator_button.setStyleSheet("font:bold 16px")
+        self.options.addWidget(self.playlist_creator_button)
 
         # Workout Player Button
         self.workout_player_button = QPushButton('Workout Player')
-        # self.workout_player_button.setFixedSize(150,100)
+        # self.workout_player_button.setFixedSize(250,100)
         self.workout_player_button.clicked.connect(self.switch_to_start_session)
-        self.layout.addWidget(self.workout_player_button)
+        self.workout_player_button.setStyleSheet("font:bold 16px")
+        self.options.addWidget(self.workout_player_button)
 
-        self.layout.setAlignment(Qt.AlignCenter)
+        # self.options.setAlignment(Qt.AlignCenter)
+
+        self.layout.addLayout(self.options)
+
+        self.layout.addStretch()
+
+        # self.layout.setAlignment(Qt.AlignCenter)
         self.setLayout(self.layout)
 
     def switch_to_workout_creator(self):
         self.workout_creator_signal.emit()
+
     def switch_to_playlist_creator(self):
         self.playlist_creator_signal.emit()
+
     def switch_to_start_session(self):
         self.workout_player_signal.emit()

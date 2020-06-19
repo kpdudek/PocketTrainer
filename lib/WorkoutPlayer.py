@@ -176,7 +176,8 @@ class WorkoutPlayer(QWidget,FilePaths):
         self.middle_layout.addWidget(self.workout_window_widget,3)
 
         # Load selected playlist
-        self.selected_playlist = self.playlist_names[self.playlist_list.currentRow()]
+        # self.selected_playlist = self.playlist_names[self.playlist_list.currentRow()]
+        self.selected_playlist = self.playlist_list.currentItem().text()
         self.playlist_file_name = self.selected_playlist + '.json'
         try:
             with open('%sPlaylists/%s'%(self.user_path,self.playlist_file_name)) as fp:

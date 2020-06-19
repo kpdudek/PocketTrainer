@@ -24,6 +24,11 @@ def log(text, color=None):
     RESET = '\033[m' # reset to the defaults
     GREEN =  '\033[32m'
     RED = '\033[31m'
+    YELLOW = '\033[33m'
+    CYAN = '\033[36m'
+
+    BOLD = '\033[1m'
+    UNDERLINE = '\033[2m'
 
     curr_time = str(dt.datetime.now())
     curr_time = '[%s]'%(curr_time)
@@ -34,9 +39,13 @@ def log(text, color=None):
         print(GREEN + log_msg + RESET)
     elif color == 'r' or color == 'R':
         print(RED + log_msg + RESET)
+    elif color == 'y' or color == 'Y':
+        print(YELLOW + log_msg + RESET)
+    elif color == 'c' or color == 'C':
+        print(CYAN + log_msg + RESET)
     else:
         print(log_msg)
-
+    
     # Write log message to the log file
     name = pwd.getpwuid( os.getuid() ).pw_name
     user_path = '/home/%s/PocketTrainer/'%name
