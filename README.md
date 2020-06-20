@@ -4,23 +4,17 @@ The app that lets you build, find, and share workouts
 ## Install
 Ensure you have python3 installed.
 
-Insall Qt5 as follows:
+Insall PyQt5 as follows:
 ```
-sudo apt-get install python3-pyqt5  
+pip3 install pyqt5
 sudo apt-get install python3-pyqt5.qtsvg
-```
-
-for developing, install a few extra tools:
-```
-pip3 install --user pyqt5  
-sudo apt-get install pyqt5-dev-tools
-sudo apt-get install qttools5-dev-tools
+pip3 install pyqtgraph
 ```
 
 ## Usage
 Launch the app by executing
 ```
-./pocket_trainer.py
+pocket_trainer.py
 ```
 
 ## File system
