@@ -47,13 +47,19 @@ class WorkoutPlayer(QWidget,FilePaths):
 
         # Close button to return to the main window
         self.close_layout = QHBoxLayout()
+
         self.button = QPushButton('Close')
         self.button.clicked.connect(self.switch_to_main_window)
         self.close_layout.addWidget(self.button)
         self.close_layout.addStretch()
+
+        self.refresh_button = QPushButton('Refresh')
+        self.refresh_button.clicked.connect(self.refresh)
+        self.close_layout.addWidget(self.refresh_button)
+
         self.layout.addLayout(self.close_layout)
 
-        # Load all playlists and add them to the
+        # Load all playlists and add them to the list
         self.get_playlists()
 
         # Set base layout to the widget
@@ -66,6 +72,19 @@ class WorkoutPlayer(QWidget,FilePaths):
             this widget
         '''
         self.go_home.emit()
+
+    def refresh(self):
+        # Get all files in the Playlists folder
+        self.playlist_files = os.listdir('%sPlaylists/'%(self.user_path))
+        log('{} playlists found...'.format(len(self.playlist_files)))
+        
+        #Split the json extension of the plugin files for displaying in the QComboBox
+        self.playlist_names = []
+        for filename in self.playlist_files:
+            self.playlist_names.append(filename.split('.')[0])
+
+        self.playlist_list.clear()
+        self.playlist_list.addItems(self.playlist_names)
     
     def get_playlists(self):
         '''
