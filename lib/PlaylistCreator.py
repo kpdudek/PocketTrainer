@@ -156,6 +156,7 @@ class PlaylistCreator(QWidget,FilePaths):
         self.workout_selector_layout.addWidget(self.select_playlist_button)
         self.select_playlist_button.hide()
 
+        self.display_playlists()
         self.display_selection_selected()
         self.workout_selector_widget.setLayout(self.workout_selector_layout)
         self.middle_layout.addWidget(self.workout_selector_widget)
@@ -208,8 +209,6 @@ class PlaylistCreator(QWidget,FilePaths):
 
             self.added_workouts.addItems([name])
 
-        
-        pass
 
     def display_playlists(self):
         # Shows the 'select playlist' button
@@ -333,11 +332,17 @@ class PlaylistCreator(QWidget,FilePaths):
     def save_playlist(self):
 
         playlist_name = self.playlist_name_form.form_line_edit.text()
-        playlist_name_json = playlist_name + '.json'
+
+        if playlist_name in self.playlist_names:
+            log('Playlist with that name already exists...',color='y')
 
         num_workouts = self.added_workouts.count()
-        log('Adding %d workouts to the %s playlist...'%(num_workouts,playlist_name))
+        if num_workouts == 0:
+            log('Playlist is empty. Adding anyways...',color='y')
+        else:
+            log('Adding %d workouts to the %s playlist...'%(num_workouts,playlist_name))
 
+        playlist_name_json = playlist_name + '.json'
         count = 0
         try:
             playlist_dict = {}
