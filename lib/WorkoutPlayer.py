@@ -29,6 +29,8 @@ class WorkoutPlayer(QWidget,FilePaths):
     pause = None # pause and play the workout
     previous_plugin = None
 
+    workout_split_start = 0.0
+
     def __init__(self):
         super().__init__()
         self.setWindowTitle('Workout Player')
@@ -222,9 +224,15 @@ class WorkoutPlayer(QWidget,FilePaths):
 
         # g = next(self.playlist_enum)
         # print(g)
-        self.pause = False
-        self.update_workout()
+
+        self.curr_workout_duration = 0.0
+        self.workout_split_start = self.curr_time
+
+        self.first_play = True
         self.pause = True
+        # self.pause = False
+        self.update_workout()
+        # self.pause = True
 
         self.workout_idx = 1
 
@@ -234,60 +242,73 @@ class WorkoutPlayer(QWidget,FilePaths):
         This function is called whenever play/pause is pressed, so it must be able to pause the workout currently playing
         When the workout is finished, the index is increased and the function recurses
         '''
-        if (not self.curr_idx == self.workout_idx) and (not self.pause):
+
+        if self.first_play:
+            self.refresh_workout()
+            self.first_play = False
+
+        elif ((self.curr_time - self.workout_split_start) > self.curr_workout_duration) and (not self.pause):
+            # self.workout_idx += 1
+        
+        # if (not self.curr_idx == self.workout_idx) and (not self.pause):
             self.curr_idx += 1
             self.workout_idx += 1
 
+            self.workout_split_start = self.curr_time
+
+            self.refresh_workout()
+
+    def refresh_workout(self):
+        try:
+            self.curr_playlist_idx = next(self.playlist_enum)
+        except:
+            log('Reached end of playlist {%s}'%(self.playlist_file_name))
+            return
+        
+        try:
+            self.workout_display.removeWidget(self.workout_fields_widget)
+            self.workout_fields_widget.deleteLater()
+            self.workout_fields_widget = None
+        except:
+            log("Tried to remove the workout fields widget, but it doesn't exist...")
+        
+        self.workout_fields_widget = QWidget()
+        self.workout_fields_layout = QVBoxLayout()
+
+        self.curr_workout = self.playlist[self.curr_playlist_idx[1]]
+        log('Starting workout {%s}'%(self.curr_playlist_idx[1]))
+
+        # workout = self.playlist[plugin]
+        plugin  = self.curr_playlist_idx[1]
+        plugin,index = plugin.split(',')
+
+        if not (plugin == self.previous_plugin):
+            # Load the selected workouts plugin json file
+            self.plugin_json = '%s.json'%(plugin)
             try:
-                self.curr_playlist_idx = next(self.playlist_enum)
+                fp = open('%s/Plugins/%s'%(self.user_path,self.plugin_json),'r')
+                self.workout_plugin = json.load(fp)
+                log("Loaded plugin {%s}..."%(plugin))
             except:
-                log('Reached end of playlist {%s}'%(self.playlist_file_name))
-                return
+                log("Failed to load plugin {%s}..."%(plugin))
             
-            try:
-                self.workout_display.removeWidget(self.workout_fields_widget)
-                self.workout_fields_widget.deleteLater()
-                self.workout_fields_widget = None
-            except:
-                log("Tried to remove the workout fields widget, but it doesn't exist...")
-            
-            self.workout_fields_widget = QWidget()
-            self.workout_fields_layout = QVBoxLayout()
+            for key in self.workout_plugin:
+                self.workout_name = key
+                self.workout_template = self.workout_plugin[key]
+        
+        # Populating form lines with strings from the plugin template
+        self.workout_fields = []
+        for key in self.workout_template:
+            val = key
+            self.workout_fields.append(WorkoutField(self.curr_workout[key]))
+        
+        # Add form widget to the parent widget
+        for count, key in enumerate(self.workout_fields):
+            self.workout_fields_layout.addLayout(self.workout_fields[count].form)
 
-            self.curr_workout = self.playlist[self.curr_playlist_idx[1]]
-            log('Starting workout {%s}'%(self.curr_playlist_idx[1]))
-
-            # workout = self.playlist[plugin]
-            plugin  = self.curr_playlist_idx[1]
-            plugin,index = plugin.split(',')
-
-            if not (plugin == self.previous_plugin):
-                # Load the selected workouts plugin json file
-                self.plugin_json = '%s.json'%(plugin)
-                try:
-                    fp = open('%s/Plugins/%s'%(self.user_path,self.plugin_json),'r')
-                    self.workout_plugin = json.load(fp)
-                    log("Loaded plugin {%s}..."%(plugin))
-                except:
-                    log("Failed to load plugin {%s}..."%(plugin))
-                
-                for key in self.workout_plugin:
-                    self.workout_name = key
-                    self.workout_template = self.workout_plugin[key]
-            
-            # Populating form lines with strings from the plugin template
-            self.workout_fields = []
-            for key in self.workout_template:
-                val = key
-                self.workout_fields.append(WorkoutField(self.curr_workout[key]))
-            
-            # Add form widget to the parent widget
-            for count, key in enumerate(self.workout_fields):
-                self.workout_fields_layout.addLayout(self.workout_fields[count].form)
-
-            self.workout_fields_widget.setLayout(self.workout_fields_layout)
-            self.workout_display.addWidget(self.workout_fields_widget)
-            self.previous_plugin = plugin            
+        self.workout_fields_widget.setLayout(self.workout_fields_layout)
+        self.workout_display.addWidget(self.workout_fields_widget)
+        self.previous_plugin = plugin            
 
     def pause_play(self):
         '''

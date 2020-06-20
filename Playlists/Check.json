@@ -1,1 +1,54 @@
-{"Bike Ride,2": {"Title": "3", "Type": "Type here...", "Strava Enabled": "Type here...", "Duration": "Type here...", "Difficulty [0,10]": "Type here...", "Heart Rate\nMonitor": "Type here..."}, "Bike Ride,3": {"Title": "3", "Type": "Type here...", "Strava Enabled": "Type here...", "Duration": "Type here...", "Difficulty [0,10]": "Type here...", "Heart Rate\nMonitor": "Type here..."}, "Bike Ride,4": {"Title": "t", "Type": "t", "Strava Enabled": "Type here...", "Duration": "Type here...", "Difficulty [0,10]": "Type here...", "Heart Rate\nMonitor": "Type here..."}, "Bike Ride,0": {"Title": "Type here...", "Type": "Type here...", "Strava Enabled": "Type here...", "Duration": "Type here...", "Difficulty [0,10]": "Type here...", "Heart Rate\nMonitor": "Type here..."}, "Yoga,Workout Name:": {"Pose Name": "dd", "Body Area": "dd", "Image Name": "d", "Duration": "4", "Difficulty [0,10]": "3", "Focus": "d", "Blocks Required": "no", "Both Sides": "no"}, "Yoga,test": {"Pose Name": "test", "Body Area": "tes", "Image Name": "te", "Duration": "4", "Difficulty [0,10]": "3", "Focus": "fe", "Blocks Required": "no", "Both Sides": "no"}}
+{
+    "Bike Ride,2": {
+        "Title": "3",
+        "Type": "Type here...",
+        "Strava Enabled": "Type here...",
+        "Duration": "Type here...",
+        "Difficulty [0,10]": "Type here...",
+        "Heart Rate\nMonitor": "Type here..."
+    },
+    "Bike Ride,3": {
+        "Title": "3",
+        "Type": "Type here...",
+        "Strava Enabled": "Type here...",
+        "Duration": "Type here...",
+        "Difficulty [0,10]": "Type here...",
+        "Heart Rate\nMonitor": "Type here..."
+    },
+    "Bike Ride,4": {
+        "Title": "t",
+        "Type": "t",
+        "Strava Enabled": "Type here...",
+        "Duration": "Type here...",
+        "Difficulty [0,10]": "Type here...",
+        "Heart Rate\nMonitor": "Type here..."
+    },
+    "Bike Ride,0": {
+        "Title": "Type here...",
+        "Type": "Type here...",
+        "Strava Enabled": "Type here...",
+        "Duration": "Type here...",
+        "Difficulty [0,10]": "Type here...",
+        "Heart Rate\nMonitor": "Type here..."
+    },
+    "Yoga,Workout Name:": {
+        "Pose Name": "dd",
+        "Body Area": "dd",
+        "Image Name": "d",
+        "Duration": "4",
+        "Difficulty [0,10]": "3",
+        "Focus": "d",
+        "Blocks Required": "no",
+        "Both Sides": "no"
+    },
+    "Yoga,test": {
+        "Pose Name": "test",
+        "Body Area": "tes",
+        "Image Name": "te",
+        "Duration": "4",
+        "Difficulty [0,10]": "3",
+        "Focus": "fe",
+        "Blocks Required": "no",
+        "Both Sides": "no"
+    }
+}
