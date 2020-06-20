@@ -33,3 +33,30 @@ class WorkoutField(QWidget):
         self.form_line_label.setAlignment(Qt.AlignVCenter | Qt.AlignCenter)
         # self.form_line_label.setFixedSize(120, 40)
         self.form.addWidget(self.form_line_label)
+
+class RadioStack(QWidget):
+    def __init__(self,radio_list):
+        super().__init__()
+
+        self.radio_layout = QHBoxLayout()
+
+        self.radio_buttons = []
+        for text in radio_list:
+            radio_button = QRadioButton()
+            radio_button.setText(text)
+
+            self.radio_layout.addWidget(radio_button)
+            self.radio_buttons.append(radio_button)
+
+        self.radio_buttons[0].setChecked(True)
+        
+        self.setLayout(self.radio_layout)
+
+    def get_checked_text(self):
+        for button in self.radio_buttons:
+            if button.isChecked():
+                return button.text() 
+    
+    def connect_toggle(self,fn):
+        for button in self.radio_buttons:
+            button.toggled.connect(fn)
