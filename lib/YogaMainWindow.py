@@ -56,23 +56,23 @@ class YogaMainWindow(QWidget,FilePaths):
         self.options = QVBoxLayout()
         # Workout Creator Button
         self.workout_creator_button = QPushButton('Workout Creator')
-        # self.workout_creator_button.setFixedSize(250,100)
+        # self.workout_creator_button.setFixedSize(350,100)
         self.workout_creator_button.clicked.connect(self.switch_to_workout_creator)
-        self.workout_creator_button.setStyleSheet("font:bold 16px")
+        self.workout_creator_button.setStyleSheet("font:bold 18px")
         self.options.addWidget(self.workout_creator_button)
 
         # Playlist Creator Button
         self.playlist_creator_button = QPushButton('Playlist Editor')
-        # self.playlist_creator_button.setFixedSize(250,100)
+        # self.playlist_creator_button.setFixedSize(350,100)
         self.playlist_creator_button.clicked.connect(self.switch_to_playlist_creator)
-        self.playlist_creator_button.setStyleSheet("font:bold 16px")
+        self.playlist_creator_button.setStyleSheet("font:bold 18px")
         self.options.addWidget(self.playlist_creator_button)
 
         # Workout Player Button
         self.workout_player_button = QPushButton('Workout Player')
-        # self.workout_player_button.setFixedSize(250,100)
+        # self.workout_player_button.setFixedSize(350,100)
         self.workout_player_button.clicked.connect(self.switch_to_start_session)
-        self.workout_player_button.setStyleSheet("font:bold 16px")
+        self.workout_player_button.setStyleSheet("font:bold 18px")
         self.options.addWidget(self.workout_player_button)
 
         # self.options.setAlignment(Qt.AlignCenter)
