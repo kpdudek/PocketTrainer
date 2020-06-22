@@ -222,10 +222,10 @@ class WorkoutCreator(QWidget,FilePaths):
             try:
                 lp = open('%s/Library/%s'%(self.user_path,self.workout_selected_json),'w')
                 json.dump(library, lp)
-                log("Library appended successfully...")
+                log("Library appended successfully...",color='g')
             except:
-                log("Library could not be appended...")
+                log("Library could not be appended...",color='r')
 
         else:
-            log("Invalid entries...")
+            log("Invalid entries...",color='r')
         pass

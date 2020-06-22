@@ -278,6 +278,9 @@ class WorkoutPlayer(QWidget,FilePaths):
         self.curr_workout = self.playlist[self.curr_playlist_idx[1]]
         log('Starting workout {%s}'%(self.curr_playlist_idx[1]))
 
+        self.curr_workout_duration = float(self.curr_workout['Duration'])
+        log('Current workout duration')
+
         # workout = self.playlist[plugin]
         plugin  = self.curr_playlist_idx[1]
         plugin,index = plugin.split(',')
@@ -373,3 +376,5 @@ class WorkoutPlayer(QWidget,FilePaths):
 
             time_label = time_vals[0] +' : '+time_vals[1]+' : '+time_vals[2]+'.'+dec
             self.timer_label.setText(time_label)
+
+        self.update_workout()
