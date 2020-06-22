@@ -94,9 +94,9 @@ class PlaylistCreator(QWidget,FilePaths):
         self.playlist_create_options.addWidget(self.new_playlist_button)
         self.new_playlist_button.clicked.connect(self.new_playlist)
 
-        # self.load_playlist_button = QPushButton('Load')
-        # self.playlist_create_options.addWidget(self.load_playlist_button)
-        # self.load_playlist_button.clicked.connect(self.load_playlist)
+        self.delete_playlist_button = QPushButton('Delete')
+        self.playlist_create_options.addWidget(self.delete_playlist_button)
+        self.delete_playlist_button.clicked.connect(self.delete_playlist)
 
         self.workout_selector_layout.addLayout(self.playlist_create_options)
 
@@ -186,6 +186,41 @@ class PlaylistCreator(QWidget,FilePaths):
 
         pass
 
+    def delete_playlist(self):
+
+        selection = self.radio_stack.get_checked_text()
+
+        if selection == 'Playlists':
+            self.selected_playlist = self.playlist_list.currentItem().text()
+            self.playlist_file_name = self.selected_playlist + '.json'
+
+            os.remove('%sPlaylists/%s'%(self.user_path,self.playlist_file_name))
+            log('Playlist {%s} deleted...'%(self.selected_playlist),color='y')
+
+            self.display_playlists()
+
+        elif selection == 'Workouts':
+            selected_workout = self.workout_list.currentItem().text()
+            selected_workout_filename = selected_workout + '.json'
+            lp = open('%sLibrary/%s'%(self.user_path,self.selected_workout_type_json),'r')
+            library = json.load(lp)
+            lp.close()
+
+            library.pop(selected_workout)
+
+            lp = open('%sLibrary/%s'%(self.user_path,self.selected_workout_type_json),'w')
+            json.dump(library,lp)
+            lp.close()
+
+            log('Workout {%s} deleted...'%(selected_workout),color='y')
+
+            self.display_workouts()
+
+        else:
+            log('Failed to load a selection...',color='r')
+
+        pass
+
     def load_playlist(self):
         # Wipe the workout list widget
         # Wipe the playlist editor list widget
@@ -223,6 +258,8 @@ class PlaylistCreator(QWidget,FilePaths):
         
         self.workout_list.hide()
         self.playlist_list.show()
+
+        self.playlist_list.clear()
         
         self.playlist_names = os.listdir('%sPlaylists/'%(self.user_path))
 
