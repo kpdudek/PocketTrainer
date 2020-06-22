@@ -38,28 +38,43 @@ class WorkoutCreator(QWidget,FilePaths):
             self.first_launch = False
             log('Set geometry of workout creator window...',color='g')
 
-        self.layout = QGridLayout()
+        self.layout = QVBoxLayout()
         self.starting_row = 2 # Starting row for the form
         self.width = 6 # Grid width used 
         self.height = 15
 
         # Set 'Home' button in top left corner
+        self.home_layout = QHBoxLayout()
         self.button = QPushButton('Home')
         self.button.clicked.connect(self.switch_to_main_window)
-        self.layout.addWidget(self.button,0,0)
+        self.home_layout.addWidget(self.button)
+        self.home_layout.addStretch()
+
+        self.layout.addLayout(self.home_layout)
+
+        self.workout_creator_title = QLabel('Workout Creator')
+        self.workout_creator_title.setFrameStyle(QFrame.Panel)
+        self.workout_creator_title.setAlignment(Qt.AlignVCenter | Qt.AlignCenter)
+        self.workout_creator_title.setStyleSheet("font:bold italic 24px; color: #353535; background-color: #ff9955")
+        self.layout.addWidget(self.workout_creator_title)
 
         # Load plugins and display in combo box
         self.load_plugins()
+
+        self.selector_layout = QHBoxLayout()
+
         self.workout_type_selector = QComboBox()
         self.workout_type_selector.addItems(self.workout_types)
-        self.layout.addWidget(self.workout_type_selector,1,0,1,self.width-1) 
+        self.selector_layout.addWidget(self.workout_type_selector) 
 
         self.select_plugin_button = QPushButton('Select')
         self.select_plugin_button.clicked.connect(self.display_form)
-        self.layout.addWidget(self.select_plugin_button,1,self.width)
+        self.selector_layout.addWidget(self.select_plugin_button)
 
-        self.spacer = QLabel()
-        self.layout.addWidget(self.spacer,self.starting_row,0,self.height,self.width)
+        self.layout.addLayout(self.selector_layout)
+
+        # self.spacer = QLabel()
+        # self.layout.addWidget(self.spacer,self.starting_row,0,self.height,self.width)
 
         self.add_workout_button = QPushButton('Add')
         self.add_workout_button.clicked.connect(self.add_workout)
@@ -70,6 +85,8 @@ class WorkoutCreator(QWidget,FilePaths):
         self.num_header_widgets = 3
         # Set layout of widget
         self.setLayout(self.layout)
+
+        self.display_form()
 
     def switch_to_main_window(self):
         self.go_home.emit()
@@ -96,14 +113,6 @@ class WorkoutCreator(QWidget,FilePaths):
         workout_selected = self.workout_type_selector.currentText()
         if self.previous_workout_selected == workout_selected:
             return
-        
-        # Remove the spacer if it exists
-        try:
-            self.layout.removeWidget(self.spacer)
-            self.spacer.deleteLater()
-            self.spacer = None
-        except:
-            log("Tried to hide the spacer, but it doesn't exist...")
 
         # Delete the existing Form Widget in order to display the new selected workout        
         try:
@@ -143,13 +152,9 @@ class WorkoutCreator(QWidget,FilePaths):
         for count, key in enumerate(self.form_lines):
             form.addWidget(key)
         self.form_widget.setLayout(form)
-        self.layout.addWidget(self.form_widget,self.starting_row,0,self.height,self.width+2)
+        self.layout.addWidget(self.form_widget)
 
-        if not self.workout_button_added:
-            self.layout.addWidget(self.add_workout_button,self.height+2,0,self.height+1,self.width+2)
-            self.workout_button_added = True
-            log("Add workout button added to workout creator widget...")
-
+        form.addWidget(self.add_workout_button)
         self.previous_workout_selected = workout_selected
 
     def check_entries(self):
